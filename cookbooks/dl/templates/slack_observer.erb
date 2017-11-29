@@ -1,0 +1,19 @@
+ check process slack_observer matching slack_observer
+  environments = []
+  environments << "SLACK_TOKEN=#{@slack_token}"
+  environments << "SLACK_CHANEL_ID=#{@slack_chanel_id}"
+  environments << "BUCKET_NAME=#{@bucket_name}"
+  environments << "MAPER=#{@maper}"
+  environments << "NAME=#{@name}"
+  environments << "SLACK_OBSERVER=#{@slack_observer}"
+  environments << "HOST=#{@host}"
+  environments << "USERNAME=#{@username}"
+  environments << "PASSWORD=#{@password}"
+  environments << "PORT=#{@port}"
+  environments << "SECRET_ACCESS_KEY=#{@secret_access_key}"
+  environments << "REGION=#{@region}"
+  environments << "ENDPOINT=#{@endpoint}"
+
+  start program = "/bin/su - <%= @deploy_user %> -c 'cd <%= @deploy_dir %>/current && <%= environments.join(' ') %> ruby script/start_slack_observer.rb 1>> log/slack_observer_monit.stdout.log 2>> log/slack_observer_monit.stderr.log' 2>> /var/log/messages"
+  stop program = "/usr/bin/pkill -f slack_observer"
+  if not exist for 1 cycles then restart
